@@ -1,7 +1,7 @@
 import { IPipeWrapper, PropKey } from "./general-types";
 import { toArray, toMap, toSet, toES6Map } from "./intermideate-consumers";
 
-function pipeWrapper<T>(iterable: Iterable<T>): IPipeWrapper<T> {
+export function pipeWrapper<T>(iterable: Iterable<T>): IPipeWrapper<T> {
     return {
         pipe: (...fns: any[]) => {
             return pipeWrapper(
