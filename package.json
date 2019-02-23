@@ -1,11 +1,18 @@
 {
-  "name": "proj",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Itamar Held <itaheld1990@gmail.com>",
-  "license": "MIT"
+	"name": "seqtor",
+	"version": "0.0.0",
+	"description": "lazy sequence and other iterable utilities",
+	"main": "lib/index.js",
+	"scripts": {
+		"build": "tsc"
+	},
+	"author": "Itamar Held <itaheld1990@gmail.com>",
+	"license": "MIT",
+	"files": [
+		"lib",
+		"README.md"
+	],
+	"devDependencies": {
+		"typescript": "3.3.3"
+	}
 }
