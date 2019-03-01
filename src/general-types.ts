@@ -63,13 +63,13 @@ export interface IPipe<T extends any[], R> {
 }
 
 export interface IterableTransformer<T, R, S = null> {
-  onValue: (x: {
-      value: T;
-      idx: number;
-      state?: S;
-  }) => { values: Iterable<R>; done?: boolean; state?: S };
-  onDone?: (x: { value: T; idx: number; state?: S }) => Iterable<R>;
-  getInitialState?: () => S;
+    onValue: (x: {
+        value: T;
+        idx: number;
+        state?: S;
+    }) => { values: Iterable<R>; done?: boolean; state?: S };
+    onDone?: (x: { value: T; idx: number; state?: S }) => Iterable<R>;
+    getInitialState?: () => S;
 }
 
 export type IterableConsumer<T, R, S> = {

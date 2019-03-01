@@ -1,5 +1,7 @@
 import { IterableTransformer, IterableConsumer } from './general-types';
-export function transformIterable<T, R, S>(props: IterableTransformer<T, R, S>): (iterable: Iterable<T>) => Iterable<R> {
+export function transformIterable<T, R, S>(
+    props: IterableTransformer<T, R, S>
+): (iterable: Iterable<T>) => Iterable<R> {
     return (iterable: Iterable<T>): Iterable<R> => {
         const { onValue, onDone, getInitialState } = props;
 

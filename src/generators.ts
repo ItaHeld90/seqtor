@@ -1,4 +1,8 @@
-export function range(from: number, to: number, interval: number = 1): Iterable<number> {
+export function range(
+    from: number,
+    to: number,
+    interval: number = 1
+): Iterable<number> {
     return {
         *[Symbol.iterator]() {
             let currNum = from;
@@ -7,7 +11,7 @@ export function range(from: number, to: number, interval: number = 1): Iterable<
                 yield currNum;
                 currNum += interval;
             }
-        },
+        }
     };
 }
 
@@ -24,6 +28,6 @@ export function times<T>(fn: (idx: number) => T, amount: number): Iterable<T> {
                 yield fn(count);
                 count++;
             }
-        },
+        }
     };
 }
