@@ -7,7 +7,7 @@ export function pipeWrapper<T>(iterable: Iterable<T>): IPipeWrapper<T> {
     pipe: (...fns: Function[]) =>
       pipeWrapper(fns.reduce((result, fn) => fn(result), iterable)),
     consume: <R, S>(
-      consumer: ((iterable: Iterable<T>) => R) | IterableConsumer<R, T, S>
+      consumer: ((iterable: Iterable<T>) => R) | IterableConsumer<T, R, S>
     ) =>
       typeof consumer === "function"
         ? consumer(iterable)

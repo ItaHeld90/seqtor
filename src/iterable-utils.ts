@@ -1,10 +1,5 @@
-export function transformIterable<T, R, S>(
-    props: {
-        onValue: (x: { value: T; idx: number, state?: S }) => { values: Iterable<R>; done?: boolean; state?: S };
-        onDone?: (x: { value: T, idx: number, state?: S }) => Iterable<R>;
-        getInitialState?: () => S;
-    },
-): (iterable: Iterable<T>) => Iterable<R> {
+import { IterableTransformer, IterableConsumer } from './general-types';
+export function transformIterable<T, R, S>(props: IterableTransformer<T, R, S>): (iterable: Iterable<T>) => Iterable<R> {
     return (iterable: Iterable<T>): Iterable<R> => {
         const { onValue, onDone, getInitialState } = props;
 
@@ -26,19 +21,15 @@ export function transformIterable<T, R, S>(
                 }
 
                 const lastIdx = idx - 1;
-                if (onDone) yield* onDone({ value: undefined, idx: lastIdx, state });
-            },
+                if (onDone)
+                    yield* onDone({ value: undefined, idx: lastIdx, state });
+            }
         };
-    }
+    };
 }
 
 export function consumeIterable<T, R, S>(
-    props: {
-        onValue: (x: { acc: R, value: T, idx: number, state?: S }) => { result: R; done?: boolean; state?: S };
-        onDone?: (x: { acc: R, value: T, idx: number, state?: S }) => R;
-        initialValue: R;
-        initialState?: S;
-    },
+    props: IterableConsumer<T, R, S>
 ): (iterable: Iterable<T>) => R {
     return (iterable: Iterable<T>) => {
         const { onValue, onDone, initialValue, initialState } = props;
@@ -60,9 +51,9 @@ export function consumeIterable<T, R, S>(
         }
 
         if (onDone) {
-            acc = onDone({ acc, value: undefined, idx, state })
+            acc = onDone({ acc, value: undefined, idx, state });
         }
 
         return acc;
-    }
+    };
 }
