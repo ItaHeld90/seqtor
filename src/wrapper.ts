@@ -88,7 +88,7 @@ import {
 
 export function wrapper<T>(iterable: Iterable<T>): IWrapper<T> {
     return {
-        [Symbol.iterator]: iterable[Symbol.iterator],
+        [Symbol.iterator]: iterable[Symbol.iterator].bind(iterable),
         each: (fn: (item: T) => void) => each(fn)(iterable),
         reduce: <P>(reducerFn: (acc: P, item: T) => P, initialValue: P) =>
             reduce(reducerFn, initialValue)(iterable),

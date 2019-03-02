@@ -90,6 +90,7 @@ interface IConsume<T> {
 }
 
 export interface IPipeWrapper<T> {
+    [Symbol.iterator]: () => Iterator<T>;
     pipe: IPipe<[Iterable<T>], Iterable<any>>;
     consume: IConsume<T>;
     toArray: () => T[];

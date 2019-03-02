@@ -4,6 +4,7 @@ import { consumeIterable } from './iterable-utils';
 
 export function pipeWrapper<T>(iterable: Iterable<T>): IPipeWrapper<T> {
     return {
+        [Symbol.iterator]: iterable[Symbol.iterator].bind(iterable),
         pipe: (...fns: Function[]) =>
             pipeWrapper(fns.reduce((result, fn) => fn(result), iterable)),
         consume: <R, S>(
