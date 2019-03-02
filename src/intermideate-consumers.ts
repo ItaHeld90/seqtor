@@ -1,29 +1,26 @@
-import { transformIterable, consumeIterable } from "./iterable-utils";
-import { _times, shuffleArrN, randomInRange, shuffleArr } from "./helper-utils";
-import { CompareFn, PropKey } from "./general-types";
-import { take } from "./transformers";
-import { nth, size } from "./consumers";
+import { transformIterable, consumeIterable } from './iterable-utils';
+import { _times, shuffleArrN, randomInRange, shuffleArr } from './helper-utils';
+import { CompareFn, PropKey } from './general-types';
+import { take } from './transformers';
+import { nth, size } from './consumers';
 
 export const partitionMulti = <T>(...predicates: ((item: T) => boolean)[]) =>
-    transformIterable<T, T[], T[][]>(
-        {
-            onValue: ({ value, state }) => {
-                const validPredIdx = predicates.findIndex(pred => pred(value));
-                const resultIdx = validPredIdx === -1
-                    ? predicates.length
-                    : validPredIdx;
+    transformIterable<T, T[], T[][]>({
+        onValue: ({ value, state }) => {
+            const validPredIdx = predicates.findIndex(pred => pred(value));
+            const resultIdx =
+                validPredIdx === -1 ? predicates.length : validPredIdx;
 
-                state[resultIdx].push(value);
+            state[resultIdx].push(value);
 
-                return {
-                    values: [],
-                    state
-                };
-            },
-            onDone: ({ state }) => state,
-            getInitialState: () => _times(predicates.length + 1, () => [])
+            return {
+                values: [],
+                state
+            };
         },
-    )
+        onDone: ({ state }) => state,
+        getInitialState: () => _times(predicates.length + 1, () => [])
+    });
 
 export function shuffle<T>(iterable: Iterable<T>): Iterable<T> {
     return {
@@ -31,7 +28,7 @@ export function shuffle<T>(iterable: Iterable<T>): Iterable<T> {
             const arr = toArray<T>()(iterable);
             yield* shuffleArr(arr);
         }
-    }
+    };
 }
 
 export function sample<T>(iterable: Iterable<T>): T {
@@ -50,8 +47,8 @@ export const sampleSize = (size: number) => <T>(iterable: Iterable<T>) => {
             const shuffled = shuffleArrN(arr, numSample - 1);
             yield* take<T>(numSample)(shuffled);
         }
-    }
-}
+    };
+};
 
 export function reverse<T>(iterable: Iterable<T>): Iterable<T> {
     return {
@@ -62,11 +59,13 @@ export function reverse<T>(iterable: Iterable<T>): Iterable<T> {
             for (let i = length - 1; i >= 0; i--) {
                 yield arr[i];
             }
-        },
+        }
     };
 }
 
-export const sort = <T>(compareFn: (item1: T, item2: T) => number) => (iterable: Iterable<T>) => {
+export const sort = <T>(compareFn: (item1: T, item2: T) => number) => (
+    iterable: Iterable<T>
+) => {
     return {
         *[Symbol.iterator]() {
             const arr = toArray<T>()(iterable);
@@ -74,11 +73,13 @@ export const sort = <T>(compareFn: (item1: T, item2: T) => number) => (iterable:
             for (let item of arr.sort(compareFn)) {
                 yield item;
             }
-        },
+        }
     };
-}
+};
 
-export const sortBy = <T>(transFn: (item: T) => number) => (iterable: Iterable<T>) => {
+export const sortBy = <T>(transFn: (item: T) => number) => (
+    iterable: Iterable<T>
+) => {
     const compareFn = (item1: T, item2: T) => {
         const val1 = transFn(item1);
         const val2 = transFn(item2);
@@ -87,9 +88,11 @@ export const sortBy = <T>(transFn: (item: T) => number) => (iterable: Iterable<T
     };
 
     return sort(compareFn)(iterable);
-}
+};
 
-export const sortWith = <T>(compareFns: CompareFn<T>[]) => (iterable: Iterable<T>) => {
+export const sortWith = <T>(compareFns: CompareFn<T>[]) => (
+    iterable: Iterable<T>
+) => {
     const compareFn = (item1: T, item2: T) => {
         let result = 0;
         let fnIdx = 0;
@@ -103,20 +106,18 @@ export const sortWith = <T>(compareFns: CompareFn<T>[]) => (iterable: Iterable<T
     };
 
     return sort(compareFn)(iterable);
-}
+};
 
 export function toArray<T>() {
-    return consumeIterable<T, T[], null>(
-        {
-            onValue: ({ acc, value }) => {
-                acc.push(value);
-                return {
-                    result: acc
-                }
-            },
-            initialValue: [] as T[]
+    return consumeIterable<T, T[], null>({
+        onValue: ({ acc, value }) => {
+            acc.push(value);
+            return {
+                result: acc
+            };
         },
-    )
+        initialValue: [] as T[]
+    });
 }
 
 export function toSet<T>(iterable: Iterable<T>) {
@@ -124,67 +125,63 @@ export function toSet<T>(iterable: Iterable<T>) {
 }
 
 export function toMap<T, V>(keyValFn: (item: T) => [PropKey, V]) {
-    return consumeIterable<T, { [key: string]: V }, null>(
-        {
-            onValue: ({ acc, value }) => {
-                const [key, val] = keyValFn(value);
-                acc[key] = val;
-                return {
-                    result: acc
-                }
-            },
-            initialValue: {} as { [key: string]: V }
+    return consumeIterable<T, { [key: string]: V }, null>({
+        onValue: ({ acc, value }) => {
+            const [key, val] = keyValFn(value);
+            acc[key] = val;
+            return {
+                result: acc
+            };
         },
-    )
+        initialValue: {} as { [key: string]: V }
+    });
 }
 
 export function toES6Map<T, K, V>(keyValFn: (item: T) => [K, V]) {
-    return consumeIterable<T, Map<K, V>, null>(
-        {
-            onValue: ({ acc, value }) => {
-                const [key, val] = keyValFn(value);
+    return consumeIterable<T, Map<K, V>, null>({
+        onValue: ({ acc, value }) => {
+            const [key, val] = keyValFn(value);
 
-                return {
-                    result: acc.set(key, val)
-                }
-            },
-            initialValue: new Map<K, V>()
+            return {
+                result: acc.set(key, val)
+            };
         },
-    )
+        initialValue: new Map<K, V>()
+    });
 }
 
 export const partition = <T>(predicateFn: (item: T) => boolean) =>
-    consumeIterable<T, [T[], T[]], null>(
-        {
-            onValue: ({ acc, value }) => {
-                const [passed, rejected] = acc;
+    consumeIterable<T, [T[], T[]], null>({
+        onValue: ({ acc, value }) => {
+            const [passed, rejected] = acc;
 
-                if (predicateFn(value)) {
-                    passed.push(value);
-                } else {
-                    rejected.push(value);
-                }
+            if (predicateFn(value)) {
+                passed.push(value);
+            } else {
+                rejected.push(value);
+            }
 
-                return {
-                    result: acc
-                }
-            },
-            initialValue: [[], []] as [T[], T[]]
+            return {
+                result: acc
+            };
         },
-    )
+        initialValue: [[], []] as [T[], T[]]
+    });
 
 export function head<T>(iterable: Iterable<T>) {
     return iterable[Symbol.iterator]().next().value;
 }
 
-export const tap = <T>(fn: (intermediateValue: T[]) => void) => (iterable: Iterable<T>) => {
+export const tap = <T>(fn: (intermediateValue: T[]) => void) => (
+    iterable: Iterable<T>
+) => {
     const intermediateArr = toArray<T>()(iterable);
     fn(intermediateArr);
     return intermediateArr;
-}
+};
 
 export const log = (label: string) => <T>(iterable: Iterable<T>) => {
     const intermediateArr = toArray<T>()(iterable);
     console.log(label + ':', intermediateArr);
     return intermediateArr;
-}
+};
